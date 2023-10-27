@@ -1,0 +1,32 @@
+name: Build
+
+on:
+  pull_request:
+    types: [ opened, reopened ]
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - uses: davidB/rust-cargo-make@v1
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Check documentation
+        run: cargo doc --no-deps --document-private-items --all-features --workspace --examples
+        env:
+          RUSTDOCFLAGS: -D warnings
+
+      - name: Release build
+        run: cargo build --release
+      - name: Run unit tests
+        run: cargo make test
