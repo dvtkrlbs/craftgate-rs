@@ -3,7 +3,7 @@ name = "craftgate"
 version = "0.0.1"
 authors = ["Tunahan Karlibas <dvt.tnhn.krlbs@icloud.com>"]
 edition = "2021"
-# version
+license = "MIT"
 publish = false
 repository = "https://github.com/dvtkrlbs/craftgate-rs"
 
@@ -26,7 +26,7 @@ data-encoding = "2.4.0"
 thiserror = "1.0.49"
 async-trait = "0.1.73"
 anyhow = "1.0.75"
-serde = { verson = "1.0.188", features = ["derive"] }
+serde = { version = "1.0.188", features = ["derive"] }
 serde-enum-str = "0.4.0"
 serde_json = "1.0.107"
 rust_decimal = "1.32.0"

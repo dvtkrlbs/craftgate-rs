@@ -80,7 +80,7 @@ impl From<ErrorResponse> for CraftgateError {
 }
 
 impl CraftgateClient {
-    pub(crate) fn new(sandbox: bool, api_key: &str, secret_key: &str) -> Self {
+    pub fn new(sandbox: bool, api_key: &str, secret_key: &str) -> Self {
         let retry_policy = ExponentialBackoff::builder().build_with_max_retries(3);
         let client = ClientBuilder::new(reqwest::Client::new())
             // Trace HTTP requests. See the tracing crate to make use of these traces.
@@ -106,14 +106,7 @@ impl CraftgateClient {
         }
     }
 
-    fn from_client(client: ClientWithMiddleware, sandbox: bool) -> Self {
-        Self {
-            client,
-            base_url: Self::url(sandbox),
-        }
-    }
-
-    pub(crate) async fn create_member(
+    pub async fn create_member(
         &self,
         member: Member,
     ) -> Result<CreateMemberResponse, CraftgateError> {
@@ -134,10 +127,11 @@ impl CraftgateClient {
     }
 }
 
+#[allow(unused)]
 async fn extract_single_response<T: for<'a> Deserialize<'a>>(resp: Response) -> Result<T, CraftgateError> {
     let resp: ApiResponse<T> = resp.json().await?;
 
-    return match resp.response {
+    match resp.response {
         ApiResponseVariant::Error(e) => Err(CraftgateError::from(e)),
         ApiResponseVariant::Success(succ) => match succ {
             SuccessResponse::Single(s) => Ok(s),
@@ -145,13 +139,14 @@ async fn extract_single_response<T: for<'a> Deserialize<'a>>(resp: Response) -> 
                 expected: ResponseFormat::Single,
             }),
         },
-    };
+    }
 }
 
+#[allow(unused)]
 async fn extract_paginated_response<T: for<'a> Deserialize<'a>>(resp: Response) -> Result<Vec<T>, CraftgateError> {
     let resp: ApiResponse<T> = resp.json().await?;
 
-    return match resp.response {
+    match resp.response {
         ApiResponseVariant::Error(e) => Err(CraftgateError::from(e)),
         ApiResponseVariant::Success(succ) => match succ {
             SuccessResponse::Single(_s) => Err(CraftgateError::UnexpectedFormat {
@@ -159,7 +154,7 @@ async fn extract_paginated_response<T: for<'a> Deserialize<'a>>(resp: Response) 
             }),
             SuccessResponse::Paginated(paginated) => Ok(paginated.items),
         },
-    };
+    }
 }
 
 

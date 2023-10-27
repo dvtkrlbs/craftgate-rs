@@ -37,7 +37,7 @@ pub struct PaginatedResponse<T> {
 
 #[cfg(test)]
 mod tests {
-    use std::ops::Deref;
+    
 
     use assert_matches::assert_matches;
     use serde::{Deserialize, Serialize};

@@ -1,7 +1,9 @@
-use crate::request::onboarding::create_member::Member;
-use crate::request::onboarding::MemberType;
 #[cfg(test)]
-use crate::tests::get_test_client;
+use crate::{
+    request::onboarding::create_member::Member,
+    request::onboarding::MemberType,
+    tests::get_test_client
+};
 
 #[tokio::test]
 #[ignore]
