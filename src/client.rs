@@ -1,15 +1,15 @@
-use std::str::FromStr;
 
-use bytes::{BufMut};
-use rand::{Rng, SeedableRng};
+
+
+
 use reqwest::{
     Response, Url,
 };
-use reqwest_middleware::{ClientBuilder, ClientWithMiddleware, Middleware, Next};
+use reqwest_middleware::{ClientBuilder, ClientWithMiddleware};
 use reqwest_retry::{policies::ExponentialBackoff, RetryTransientMiddleware};
 use reqwest_tracing::TracingMiddleware;
-use secrecy::{ExposeSecret, SecretString};
-use serde::{Deserialize, Deserializer, Serialize};
+
+use serde::{Deserialize};
 
 use crate::{
     api_error::{ErrorCode, ErrorGroup, ErrorResponse},
@@ -154,7 +154,7 @@ async fn extract_paginated_response<T: for<'a> Deserialize<'a>>(resp: Response) 
     return match resp.response {
         ApiResponseVariant::Error(e) => Err(CraftgateError::from(e)),
         ApiResponseVariant::Success(succ) => match succ {
-            SuccessResponse::Single(s) => Err(CraftgateError::UnexpectedFormat {
+            SuccessResponse::Single(_s) => Err(CraftgateError::UnexpectedFormat {
                 expected: ResponseFormat::Paginated,
             }),
             SuccessResponse::Paginated(paginated) => Ok(paginated.items),

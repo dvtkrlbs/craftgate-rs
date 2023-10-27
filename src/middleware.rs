@@ -71,9 +71,9 @@ fn calculate_signature(
     let hash = Hash::hash(payload.as_ref());
 
     let base64_hash = BASE64.encode(&hash);
-    let mut headers = req.headers_mut();
+    let headers = req.headers_mut();
     headers.insert(X_API_KEY, access_key.parse()?);
-    headers.insert(X_RND_KEY, random_string.clone().parse()?);
+    headers.insert(X_RND_KEY, random_string.parse()?);
     headers.insert(X_AUTH_VERSION, "1".parse()?);
     headers.insert(X_SIGNATURE, base64_hash.parse()?);
 

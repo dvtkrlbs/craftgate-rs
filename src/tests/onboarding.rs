@@ -1,6 +1,5 @@
-use crate::{
-    request::onboarding::{create_member::Member, MemberType},
-};
+use crate::request::onboarding::create_member::Member;
+use crate::request::onboarding::MemberType;
 #[cfg(test)]
 use crate::tests::get_test_client;
 

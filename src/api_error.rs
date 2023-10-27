@@ -1,4 +1,4 @@
-use std::{fmt, ops::Deref};
+use std::{fmt};
 
 use serde::{de::Visitor, Deserialize, Deserializer, Serialize};
 use serde_enum_str::{Deserialize_enum_str, Serialize_enum_str};
