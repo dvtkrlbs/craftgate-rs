@@ -1,10 +1,9 @@
-
+use crate::request::{CardType, Currency};
 use derive_builder::Builder;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 use time::PrimitiveDateTime;
-use crate::request::{CardType, Currency};
 
 pub mod checkout_payment;
 
@@ -181,7 +180,6 @@ pub enum CardAssociation {
     DinersClub,
 }
 
-
 /// Indicated which type of integration a payment is coming from
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
@@ -256,9 +254,8 @@ pub enum FraudAction {
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum TransactionStatus {
     WaitingForApproval,
-    Approved
+    Approved,
 }
-
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -394,7 +391,7 @@ pub struct Payout {
     /// Payout amount of the merchant
     pub merchant_payout_amount: Decimal,
     /// Payout amount of the sub-merchant
-    pub sub_merchant_member_payout_amount: Decimal
+    pub sub_merchant_member_payout_amount: Decimal,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

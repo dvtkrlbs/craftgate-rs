@@ -7,7 +7,7 @@ use crate::api_error::ErrorResponse;
 pub struct ApiResponse<T> {
     status: Option<u64>,
     #[serde(flatten)]
-    pub(crate) response: ApiResponseVariant<T>
+    pub(crate) response: ApiResponseVariant<T>,
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -37,16 +37,15 @@ pub struct PaginatedResponse<T> {
 
 #[cfg(test)]
 mod tests {
-    
 
     use assert_matches::assert_matches;
     use serde::{Deserialize, Serialize};
 
+    use crate::response::ApiResponseVariant;
     use crate::{
         api_error::ErrorGroup,
         response::{ApiResponse, SuccessResponse},
     };
-    use crate::response::ApiResponseVariant;
 
     #[derive(Debug, Clone, Serialize, Deserialize)]
     #[serde(rename_all = "camelCase")]

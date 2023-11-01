@@ -1,10 +1,10 @@
 pub mod create_member;
-pub mod update_member;
 pub mod search_members;
+pub mod update_member;
 
+use crate::request::Status;
 use serde::{Deserialize, Serialize};
 use time::PrimitiveDateTime;
-use crate::request::Status;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]

@@ -55,4 +55,8 @@ pub enum CardType {
     PrepaidCard,
 }
 
-format_description!(craftgate, PrimitiveDateTime, "[year]-[month]-[day]T[hour repr:24]:[minute]:[second]");
+format_description!(
+    craftgate,
+    PrimitiveDateTime,
+    "[year]-[month]-[day]T[hour repr:24]:[minute]:[second]"
+);

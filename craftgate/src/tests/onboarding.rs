@@ -1,14 +1,13 @@
 #[cfg(test)]
 use crate::{
-    request::onboarding::MemberType,
-    tests::get_test_client
+    request::onboarding::{
+        create_member::CreateMemberRequest, search_members::SearchMembersRequestBuilder,
+        update_member::UpdateMemberRequestBuilder, MemberType,
+    },
+    tests::get_test_client,
 };
 #[cfg(test)]
 use assert_matches::assert_matches;
-
-
-
-
 
 #[tokio::test]
 #[ignore]
@@ -57,11 +56,16 @@ async fn test_update_member() {
         .build()
         .expect("Valid Request");
 
-    let member = get_test_client().update_member(89508, member).await.unwrap();
+    let member = get_test_client()
+        .update_member(89508, member)
+        .await
+        .unwrap();
 
-    assert_eq!(member.member_external_id, "d8fa867b-000b-4b96-ad3c-43ea22e65e3f".to_owned());
+    assert_eq!(
+        member.member_external_id,
+        "d8fa867b-000b-4b96-ad3c-43ea22e65e3f".to_owned()
+    );
 }
-
 
 #[tokio::test]
 #[ignore]
@@ -77,11 +81,11 @@ async fn test_retrieve_member() {
 #[ignore]
 async fn test_search_members() {
     let params = SearchMembersRequestBuilder::default()
-        .member_external_id("d8fa867b-000b-4b96-ad3c-43ea22e65e3f".to_owned()).build().unwrap();
+        .member_external_id("d8fa867b-000b-4b96-ad3c-43ea22e65e3f".to_owned())
+        .build()
+        .unwrap();
 
     let members = get_test_client().search_members(params).await.unwrap();
 
     assert_eq!(members.items.len(), 1);
 }
-
-

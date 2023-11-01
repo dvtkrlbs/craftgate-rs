@@ -1,4 +1,3 @@
-use std::str::FromStr;
 use async_trait::async_trait;
 use bytes::{BufMut, BytesMut};
 use data_encoding::BASE64;
@@ -10,6 +9,7 @@ use reqwest::header::{HeaderName, InvalidHeaderValue};
 use reqwest::{Request, Response};
 use reqwest_middleware::{Middleware, Next};
 use secrecy::{ExposeSecret, SecretString};
+use std::str::FromStr;
 use task_local_extensions::Extensions;
 use thiserror::Error;
 

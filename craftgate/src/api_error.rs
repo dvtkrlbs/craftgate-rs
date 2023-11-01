@@ -1,4 +1,4 @@
-use std::{fmt};
+use std::fmt;
 
 use serde::{de::Visitor, Deserialize, Deserializer, Serialize};
 use serde_enum_str::{Deserialize_enum_str, Serialize_enum_str};
@@ -140,55 +140,55 @@ pub enum ErrorGroup {
     /// The terminal is not authorized to perform this transaction. POS has not authorization for
     /// this operation. POS authorization should be checked.
     NotPermittedToTerminal,
-    ///     Insufficient award points. The reward point to be used is higher than the point amount
+    /// Insufficient award points. The reward point to be used is higher than the point amount
     /// belong to the card. Since there is not enough reward point, the amount of point should be
     /// updated and payment should be tried again.
     NotSufficientAward,
-    ///     Insufficient card limit, insufficient balance. Buyer’s card does not have sufficient balance
+    /// Insufficient card limit, insufficient balance. Buyer’s card does not have sufficient balance
     /// for payment. Buyer should contact to the bank.
     NotSufficientFunds,
-    ///     A general error occurred during the payment process. Bank could not respond within the
+    /// A general error occurred during the payment process. Bank could not respond within the
     /// expected time, there may have been a temporary interruption.
     NoResponse,
-    ///     Bank not found. Bank of card not found. The card number should be checked and the payment
+    /// Bank not found. Bank of card not found. The card number should be checked and the payment
     /// should be tried again.
     NoSuchIssuer,
-    ///     The order number (orderId) has already been used. Order numbers must be unique for
+    /// The order number (orderId) has already been used. Order numbers must be unique for
     /// successful sales. The order number (orderId) was previously used during another successful
     /// checkout. Successful payment transaction should be checked, if you think that the payment
     /// has not been made, the payment should be tried again with a new order number.
     OrderIdAlreadyUsed,
-    ///     Pickup the card     Bank of card refused the payment due to security/fraud suspicion. Payment
+    /// Pickup the card. Bank of card refused the payment due to security/fraud suspicion. Payment
     /// transaction cannot be made with this card.
     PickupCard,
-    ///     Virtual Pos balance is not sufficient. Virtual Pos balance is not sufficient.
+    /// Virtual Pos balance is not sufficient. Virtual Pos balance is not sufficient.
     PosBalanceNotSufficient,
-    ///     Get approval from your bank     Bank of card did not approve the payment. Buyer should contact
+    /// Get approval from your bank. Bank of card did not approve the payment. Buyer should contact
     /// to the bank for manual confirmation.
     ReferToCardIssuer,
-    ///     The request received an error from the bank     Payment request is blocked by bank.
+    /// The request received an error from the bank. Payment request is blocked by bank.
     RequestBlockedByBank,
-    ///     Request sent to bank timed out     Bank could not respond within the expected time, there may
+    /// Request sent to bank timed out. Bank could not respond within the expected time, there may
     /// have been a temporary interruption.
     RequestTimeout,
-    ///     Cash up must be done. With the POS, this transaction cannot be done before the end of the
+    /// Cash up must be done. With the POS, this transaction cannot be done before the end of the
     /// day operation.
     RequiresDayEnd,
-    ///     Your card is closed to e-commerce transactions. Call your bank.     The card is not permitted to
+    /// Your card is closed to e-commerce transactions. Call your bank. The card is not permitted to
     /// e-commerce payments. Buyer should contact to the bank and authorize this card for e-commerce
     /// payment transactions.
     RestrictedByLaw,
-    ///     Restricted card     The payment was not completed due to a restriction. Buyer can try again with
+    /// Restricted card. The payment was not completed due to a restriction. Buyer can try again with
     /// different card information.
     RestrictedCard,
-    ///     The sales amount cannot be lower than the award points. The reward points to be used cannot
+    /// The sales amount cannot be lower than the award points. The reward points to be used cannot
     /// be higher than the payment amount. The point amount to be used should be updated to be equal
     /// to or less than the payment amount.
     SalesAmountLessThanAward,
-    ///     Stolen card, pickup the card. Stolen card. Transactions cannot be made with this card.
+    /// Stolen card, pickup the card. Stolen card. Transactions cannot be made with this card.
     /// Payment attempt may be suspected of fraud.
     StolenCard,
-    ///     3D Secure payment cannot be initialized     3D Secure init request is failed, contact to the
+    /// 3D Secure payment cannot be initialized. 3D Secure init request is failed, contact to the
     /// bank for more details.
     ThreedsInitError,
     ///     An error occurred during the payment process. Payment failed, error group not detected.

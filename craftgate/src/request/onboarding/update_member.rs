@@ -1,6 +1,6 @@
+use crate::request::onboarding::{MemberType, SettlementEarningsDestination};
 use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
-use crate::request::onboarding::{MemberType, SettlementEarningsDestination};
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, Builder)]
 #[serde(rename_all = "camelCase")]

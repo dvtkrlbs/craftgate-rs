@@ -1,6 +1,6 @@
+use crate::request::onboarding::MemberType;
 use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
-use crate::request::onboarding::MemberType;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
@@ -27,7 +27,7 @@ impl Default for SearchMembersRequest {
             member_type: None,
             member_ids: None,
             name: None,
-            member_external_id: None
+            member_external_id: None,
         }
     }
 }

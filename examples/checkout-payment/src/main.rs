@@ -1,12 +1,14 @@
-use axum::http::StatusCode;
-use axum::{Extension, Form, Json, Router, ServiceExt};
 use axum::extract::Query;
+use axum::http::StatusCode;
 use axum::response::{IntoResponse, Redirect, Response};
 use axum::routing::{get, post};
+use axum::{Extension, Form, Json, Router, ServiceExt};
 use craftgate::client::CraftgateClient;
-use craftgate::request::payment::{Payment, PaymentGroup, PaymentItem, PaymentItemBuilder, PaymentPhase};
-use serde::Deserialize;
 use craftgate::request::payment::checkout_payment::CheckoutPaymentInitiationRequestBuilder;
+use craftgate::request::payment::{
+    Payment, PaymentGroup, PaymentItem, PaymentItemBuilder, PaymentPhase,
+};
+use serde::Deserialize;
 
 #[tokio::main]
 async fn main() {
@@ -15,26 +17,26 @@ async fn main() {
     let secret_key = std::env::var("SECRET_KEY").expect("SECRET_KEY");
     let client = CraftgateClient::new(true, &api_key, &secret_key);
 
-
     let app = Router::new()
         .route("/callback", post(callback_handler))
         .route("/payment", get(payment_handler))
         .layer(Extension(client));
 
-
     axum::Server::bind(&"127.0.0.1:3000".parse().unwrap())
         .serve(app.into_make_service())
         .await
         .unwrap();
-
 }
 
 #[derive(Deserialize, Debug)]
 pub struct CallbackParams {
-    pub token: String
+    pub token: String,
 }
 
-async fn callback_handler(Extension(client): Extension<CraftgateClient>, Form(params): Form<CallbackParams>) -> Json<Payment> {
+async fn callback_handler(
+    Extension(client): Extension<CraftgateClient>,
+    Form(params): Form<CallbackParams>,
+) -> Json<Payment> {
     dbg!(&params);
 
     let payment = client.checkout_payment_inquiry(params.token).await.unwrap();
@@ -50,11 +52,17 @@ async fn payment_handler(Extension(client): Extension<CraftgateClient>) -> Respo
         .payment_phase(PaymentPhase::Auth)
         .external_id("test123".to_owned())
         .callback_url("http://127.0.0.1:3000/callback".to_owned())
-        .items(vec![PaymentItemBuilder::default().price(10.0.try_into().unwrap()).build().unwrap()])
+        .items(vec![PaymentItemBuilder::default()
+            .price(10.0.try_into().unwrap())
+            .build()
+            .unwrap()])
         .build()
         .unwrap();
 
-    let resp = client.initiate_checkout_payment(payment_initiation_request).await.unwrap();
+    let resp = client
+        .initiate_checkout_payment(payment_initiation_request)
+        .await
+        .unwrap();
 
     dbg!(&resp);
 

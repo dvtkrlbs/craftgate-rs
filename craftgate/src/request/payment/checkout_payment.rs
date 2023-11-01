@@ -2,8 +2,8 @@ use derive_builder::Builder;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
-use crate::request::Currency;
 use crate::request::payment::{PaymentGroup, PaymentItem, PaymentMethod, PaymentPhase};
+use crate::request::Currency;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, Builder)]
 #[serde(rename_all = "camelCase")]

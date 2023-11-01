@@ -1,27 +1,24 @@
-
-use reqwest::{
-    Response, Url,
-};
+use reqwest::{Response, Url};
 use reqwest_middleware::{ClientBuilder, ClientWithMiddleware};
 use reqwest_retry::{policies::ExponentialBackoff, RetryTransientMiddleware};
 use reqwest_tracing::TracingMiddleware;
 
-use serde::{Deserialize};
+use serde::Deserialize;
 
+use crate::middleware::CraftgateSignatureMiddleware;
+use crate::request::onboarding::create_member::CreateMemberRequest;
+use crate::request::onboarding::search_members::SearchMembersRequest;
+use crate::request::onboarding::update_member::UpdateMemberRequest;
+use crate::request::onboarding::Member;
+use crate::request::payment::checkout_payment::{
+    CheckoutPaymentInitiationRequest, CheckoutPaymentInitiationResponse,
+};
+use crate::request::payment::Payment;
+use crate::response::{ApiResponseVariant, PaginatedResponse};
 use crate::{
     api_error::{ErrorCode, ErrorGroup, ErrorResponse},
     response::{ApiResponse, SuccessResponse},
 };
-use crate::middleware::CraftgateSignatureMiddleware;
-use crate::request::onboarding::create_member::CreateMemberRequest;
-use crate::request::onboarding::Member;
-use crate::request::onboarding::search_members::SearchMembersRequest;
-use crate::request::onboarding::update_member::UpdateMemberRequest;
-use crate::request::payment::checkout_payment::{CheckoutPaymentInitiationRequest, CheckoutPaymentInitiationResponse};
-use crate::request::payment::Payment;
-use crate::response::{ApiResponseVariant, PaginatedResponse};
-
-
 
 #[derive(Clone)]
 pub struct CraftgateClient {
@@ -51,11 +48,13 @@ pub enum CraftgateError {
     },
     SerdeError(serde_json::Error),
     ReqwestError(reqwest::Error),
-    ReqwestMiddlewareError(reqwest_middleware::Error)
+    ReqwestMiddlewareError(reqwest_middleware::Error),
 }
 
 impl From<reqwest_middleware::Error> for CraftgateError {
-    fn from(value: reqwest_middleware::Error) -> Self { Self::ReqwestMiddlewareError(value) }
+    fn from(value: reqwest_middleware::Error) -> Self {
+        Self::ReqwestMiddlewareError(value)
+    }
 }
 
 impl From<serde_json::Error> for CraftgateError {
@@ -144,7 +143,8 @@ impl CraftgateClient {
             .put(
                 self.base_url
                     .join(&format!("/onboarding/v1/members/{}", member_id))
-                    .expect("valid_url"))
+                    .expect("valid_url"),
+            )
             .json(&member)
             .send()
             .await?;
@@ -154,16 +154,13 @@ impl CraftgateClient {
         Ok(member)
     }
 
-    pub async fn retrieve_member(
-        &self,
-        member_id: u64
-    ) -> Result<Option<Member>, CraftgateError> {
+    pub async fn retrieve_member(&self, member_id: u64) -> Result<Option<Member>, CraftgateError> {
         let resp = self
             .client
             .get(
                 self.base_url
                     .join(&format!("/onboarding/v1/members/{}", member_id))
-                    .expect("valid_url")
+                    .expect("valid_url"),
             )
             .send()
             .await?;
@@ -175,14 +172,14 @@ impl CraftgateClient {
 
     pub async fn search_members(
         &self,
-        params: SearchMembersRequest
+        params: SearchMembersRequest,
     ) -> Result<PaginatedResponse<Member>, CraftgateError> {
         let resp = self
             .client
             .get(
                 self.base_url
                     .join("/onboarding/v1/members")
-                    .expect("valid url")
+                    .expect("valid url"),
             )
             .query(&params)
             .send()
@@ -195,14 +192,14 @@ impl CraftgateClient {
 
     pub async fn initiate_checkout_payment(
         &self,
-        params: CheckoutPaymentInitiationRequest
+        params: CheckoutPaymentInitiationRequest,
     ) -> Result<CheckoutPaymentInitiationResponse, CraftgateError> {
         let resp = self
             .client
             .post(
                 self.base_url
                     .join("/payment/v1/checkout-payments/init")
-                    .expect("valid url")
+                    .expect("valid url"),
             )
             .json(&params)
             .send()
@@ -213,16 +210,13 @@ impl CraftgateClient {
         Ok(resp)
     }
 
-    pub async fn checkout_payment_inquiry(
-        &self,
-        token: String,
-    ) -> Result<Payment, CraftgateError> {
+    pub async fn checkout_payment_inquiry(&self, token: String) -> Result<Payment, CraftgateError> {
         let resp = self
             .client
             .get(
                 self.base_url
                     .join(&format!("/payment/v1/checkout-payments/{}", token))
-                    .expect("valid url")
+                    .expect("valid url"),
             )
             .send()
             .await?;
@@ -231,7 +225,7 @@ impl CraftgateClient {
 
         #[derive(Deserialize)]
         pub struct Data {
-            data: Payment
+            data: Payment,
         }
 
         let resp_text = resp.text().await.unwrap();
@@ -241,16 +235,13 @@ impl CraftgateClient {
         Ok(payment.data)
     }
 
-    pub async fn expire_common_page_token(
-        &self,
-        token: String,
-    ) -> Result<(), CraftgateError> {
+    pub async fn expire_common_page_token(&self, token: String) -> Result<(), CraftgateError> {
         let _resp = self
             .client
             .delete(
                 self.base_url
                     .join(&format!("/payment/v1/checkout-payments/{}", token))
-                    .expect("valid url")
+                    .expect("valid url"),
             )
             .send()
             .await?
@@ -261,7 +252,9 @@ impl CraftgateClient {
 }
 
 #[allow(unused)]
-async fn extract_single_response<T: for<'a> Deserialize<'a>>(resp: Response) -> Result<T, CraftgateError> {
+async fn extract_single_response<T: for<'a> Deserialize<'a>>(
+    resp: Response,
+) -> Result<T, CraftgateError> {
     // let text = resp.text().await?;
     // dbg!(&text);
     let resp: ApiResponse<T> = resp.json().await?;
@@ -278,7 +271,9 @@ async fn extract_single_response<T: for<'a> Deserialize<'a>>(resp: Response) -> 
 }
 
 #[allow(unused)]
-async fn extract_paginated_response<T: for<'a> Deserialize<'a>>(resp: Response) -> Result<PaginatedResponse<T>, CraftgateError> {
+async fn extract_paginated_response<T: for<'a> Deserialize<'a>>(
+    resp: Response,
+) -> Result<PaginatedResponse<T>, CraftgateError> {
     let resp: ApiResponse<T> = resp.json().await?;
 
     match resp.response {
@@ -291,5 +286,3 @@ async fn extract_paginated_response<T: for<'a> Deserialize<'a>>(resp: Response) 
         },
     }
 }
-
-
