@@ -1,20 +1,18 @@
 use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
-use time::OffsetDateTime;
 
-use crate::request::{onboarding::MemberType, Status};
+use crate::request::{onboarding::MemberType};
+use crate::request::onboarding::SettlementEarningsDestination;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, Builder)]
 #[serde(rename_all = "camelCase")]
-pub struct Member {
-    /// Set this parameter true if member is a buyer
-    pub is_buyer: Option<bool>,
-    /// Set this parameter true if member is a seller
-    pub is_sub_merchant: Option<bool>,
-    /// Member type. Required if member is a seller.
-    pub member_type: Option<MemberType>,
+#[builder(setter(strip_option))]
+#[builder(default)]
+pub struct CreateMemberRequest {
     /// External id of the member
     pub member_external_id: String,
+    /// Member type. Required if member is a seller.
+    pub member_type: Option<MemberType>,
     /// Required if member is a seller and has limited/joint stock
     pub name: Option<String>,
     /// Address of the member
@@ -41,19 +39,11 @@ pub struct Member {
     pub contact_surname: Option<String>,
     /// Identity number of the member
     pub identity_number: Option<String>,
+    pub settlement_earnings_destination: SettlementEarningsDestination,
+    /// Set this parameter true if member is a buyer
+    pub is_buyer: Option<bool>,
+    /// Set this parameter true if member is a seller
+    pub is_sub_merchant: Option<bool>,
     /// Maximum allowed negative balance limit for sub merchant. It will be use if sub merchant balance is not enough for make refund.
     pub sub_merchant_maximum_allowed_negative_balance: u64,
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(rename_all = "camelCase")]
-pub struct CreateMemberResponse {
-    pub id: u64,
-    #[serde(with = "time::serde::rfc3339")]
-    pub created_date: OffsetDateTime,
-    #[serde(with = "time::serde::rfc3339")]
-    pub updated_date: OffsetDateTime,
-    pub status: Status,
-    #[serde(flatten)]
-    pub data: Member,
 }

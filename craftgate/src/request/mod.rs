@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use time::serde::format_description;
 
 pub mod onboarding;
 pub mod payment;
@@ -14,10 +15,11 @@ pub enum Status {
 }
 
 /// Currencies that can be used when communicating with the Craftgate API:
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum Currency {
     /// Turkish Lira
+    #[default]
     Try,
     /// U.S. Dollar
     Usd,
@@ -52,3 +54,5 @@ pub enum CardType {
     /// Prepaid card
     PrepaidCard,
 }
+
+format_description!(craftgate, PrimitiveDateTime, "[year]-[month]-[day]T[hour repr:24]:[minute]:[second]");
