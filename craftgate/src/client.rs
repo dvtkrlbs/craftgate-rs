@@ -1,3 +1,5 @@
+use core::fmt;
+
 use reqwest::{Response, Url};
 use reqwest_middleware::{ClientBuilder, ClientWithMiddleware};
 use reqwest_retry::{policies::ExponentialBackoff, RetryTransientMiddleware};
@@ -81,6 +83,33 @@ impl From<ErrorResponse> for CraftgateError {
                 code: value.code,
                 description: value.description,
                 group: value.group.expect("Payment error expected have a group"),
+            }
+        }
+    }
+}
+
+impl fmt::Display for CraftgateError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            CraftgateError::ValidationError { code, description } => {
+                write!(f, "Validation Error {:?}: {}", code, description)
+            }
+            CraftgateError::PaymentError {
+                code,
+                description,
+                group,
+            } => write!(
+                f,
+                "Payment Error {:?}: {} (group: {:?})",
+                code, description, group
+            ),
+            CraftgateError::UnexpectedFormat { expected } => {
+                write!(f, "Unexpected response format. Expected: {:?}", expected)
+            }
+            CraftgateError::SerdeError(e) => write!(f, "Serde Error: {}", e),
+            CraftgateError::ReqwestError(e) => write!(f, "Reqwest Error: {}", e),
+            CraftgateError::ReqwestMiddlewareError(e) => {
+                write!(f, "Reqwest Middleware Error: {}", e)
             }
         }
     }
