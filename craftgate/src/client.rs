@@ -223,16 +223,8 @@ impl CraftgateClient {
 
         // let payment: Payment = extract_single_response(resp).await?;
 
-        #[derive(Deserialize)]
-        pub struct Data {
-            data: Payment,
-        }
-
-        let resp_text = resp.text().await.unwrap();
-        println!("{}", &resp_text);
-        // let payment: Data = resp.json().await.unwrap();
-        let payment: Data = serde_json::from_str(&resp_text).unwrap();
-        Ok(payment.data)
+        let payment: Payment = extract_single_response(resp).await?;
+        Ok(payment)
     }
 
     pub async fn expire_common_page_token(&self, token: String) -> Result<(), CraftgateError> {
@@ -248,6 +240,22 @@ impl CraftgateClient {
             .error_for_status()?;
 
         Ok(())
+    }
+
+    pub async fn retrieve_payment(&self, id: String) -> Result<Payment, CraftgateError> {
+        let resp = self
+            .client
+            .get(
+                self.base_url
+                    .join(&format!("/payment/v1/card-payments/{}", id))
+                    .expect("valid url"),
+            )
+            .send()
+            .await?;
+
+        let payment: Payment = extract_single_response(resp).await?;
+
+        Ok(payment)
     }
 }
 

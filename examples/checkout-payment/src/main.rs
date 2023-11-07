@@ -8,7 +8,7 @@ use craftgate::request::payment::checkout_payment::CheckoutPaymentInitiationRequ
 use craftgate::request::payment::{
     Payment, PaymentGroup, PaymentItem, PaymentItemBuilder, PaymentPhase,
 };
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 #[tokio::main]
 async fn main() {
@@ -33,15 +33,28 @@ pub struct CallbackParams {
     pub token: String,
 }
 
+#[derive(Serialize)]
+pub struct CallbackResponse {
+    pub payment_token: Payment,
+    pub payment_retrieve: Payment,
+}
+
 async fn callback_handler(
     Extension(client): Extension<CraftgateClient>,
     Form(params): Form<CallbackParams>,
-) -> Json<Payment> {
+) -> Json<CallbackResponse> {
     dbg!(&params);
 
     let payment = client.checkout_payment_inquiry(params.token).await.unwrap();
+    let payment2 = client
+        .retrieve_payment(payment.id.to_string())
+        .await
+        .unwrap();
 
-    Json(payment)
+    Json(CallbackResponse {
+        payment_token: payment,
+        payment_retrieve: payment2,
+    })
 }
 
 async fn payment_handler(Extension(client): Extension<CraftgateClient>) -> Response {
