@@ -17,7 +17,6 @@ pub struct CheckoutPaymentInitiationRequest {
     #[builder(!default)]
     pub paid_price: Decimal,
     pub buyer_member_id: Option<String>,
-    #[builder(!default)]
     pub currency: Currency,
     pub payment_group: PaymentGroup,
     pub payment_phase: PaymentPhase,
