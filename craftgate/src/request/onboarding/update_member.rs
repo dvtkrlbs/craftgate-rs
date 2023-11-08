@@ -1,20 +1,24 @@
 use crate::request::onboarding::{MemberType, SettlementEarningsDestination};
-use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
+use typed_builder::TypedBuilder;
 
-#[derive(Serialize, Deserialize, Debug, Clone, Default, Builder)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default, TypedBuilder)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(strip_option))]
-#[builder(default)]
+#[builder(field_defaults(default))]
 pub struct UpdateMemberRequest {
     pub is_buyer: Option<bool>,
     pub is_sub_merchant: Option<bool>,
     pub member_type: Option<MemberType>,
+    #[builder(!default)]
     pub name: String,
+    #[builder(!default)]
     pub email: String,
+    #[builder(!default)]
     pub address: String,
     pub phone_number: Option<String>,
+    #[builder(!default)]
     pub contact_name: String,
+    #[builder(!default)]
     pub contact_surname: String,
     pub identity_number: Option<String>,
     pub legal_company_title: Option<String>,

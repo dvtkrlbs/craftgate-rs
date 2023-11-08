@@ -1,25 +1,28 @@
-use derive_builder::Builder;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
+use typed_builder::TypedBuilder;
 
 use crate::request::payment::{PaymentGroup, PaymentItem, PaymentMethod, PaymentPhase};
 use crate::request::Currency;
 
-#[derive(Serialize, Deserialize, Debug, Clone, Default, Builder)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default, TypedBuilder)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(strip_option))]
-#[builder(default)]
+#[builder(field_defaults(default))]
 pub struct CheckoutPaymentInitiationRequest {
     pub conversation_id: Option<String>,
     pub external_id: Option<String>,
     pub bank_order_id: Option<String>,
+    #[builder(!default)]
     pub price: Decimal,
+    #[builder(!default)]
     pub paid_price: Decimal,
     pub buyer_member_id: Option<String>,
+    #[builder(!default)]
     pub currency: Currency,
     pub payment_group: PaymentGroup,
     pub payment_phase: PaymentPhase,
     pub payment_channel: Option<String>,
+    #[builder(!default)]
     pub callback_url: String,
     pub card_user_key: Option<String>,
     pub enabled_installments: Option<Vec<u64>>,
@@ -30,6 +33,7 @@ pub struct CheckoutPaymentInitiationRequest {
     pub force_auth_for_non_credit_cards: Option<bool>,
     pub force_three_d_s: Option<bool>,
     pub ttl: Option<u64>,
+    #[builder(!default)]
     pub items: Vec<PaymentItem>,
     pub masterpass_gsm_number: Option<String>,
     pub masterpass_user_id: Option<String>,
