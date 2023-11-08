@@ -6,7 +6,7 @@ use typed_builder::TypedBuilder;
 #[serde(rename_all = "camelCase")]
 #[builder(field_defaults(default))]
 pub struct SearchMembersRequest {
-    #[builder(!default)]
+    #[builder(default = 0)]
     pub page: u64,
     #[builder(!default)]
     pub size: u64,

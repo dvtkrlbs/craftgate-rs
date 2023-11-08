@@ -4,10 +4,8 @@ use axum::response::{IntoResponse, Redirect, Response};
 use axum::routing::{get, post};
 use axum::{Extension, Form, Json, Router, ServiceExt};
 use craftgate::client::CraftgateClient;
-use craftgate::request::payment::checkout_payment::CheckoutPaymentInitiationRequestBuilder;
-use craftgate::request::payment::{
-    Payment, PaymentGroup, PaymentItem, PaymentItemBuilder, PaymentPhase,
-};
+use craftgate::request::payment::checkout_payment::CheckoutPaymentInitiationRequest;
+use craftgate::request::payment::{Payment, PaymentGroup, PaymentItem, PaymentPhase};
 use serde::{Deserialize, Serialize};
 
 #[tokio::main]
@@ -58,7 +56,7 @@ async fn callback_handler(
 }
 
 async fn payment_handler(Extension(client): Extension<CraftgateClient>) -> Response {
-    let payment_initiation_request = CheckoutPaymentInitiationRequestBuilder::default()
+    let payment_initiation_request = CheckoutPaymentInitiationRequest::builder()
         .price(10.0.try_into().unwrap())
         .paid_price(10.0.try_into().unwrap())
         .payment_group(PaymentGroup::Product)

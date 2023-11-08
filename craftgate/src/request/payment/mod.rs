@@ -1,9 +1,9 @@
 use crate::request::{CardType, Currency};
-use derive_builder::Builder;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 use time::PrimitiveDateTime;
+use typed_builder::TypedBuilder;
 
 pub mod checkout_payment;
 
@@ -192,20 +192,19 @@ pub enum PaymentSource {
     CheckoutForm,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, Default, Builder)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default, TypedBuilder)]
+#[builder(field_defaults(default))]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(strip_option))]
-#[builder(default)]
 pub struct PaymentItem {
     pub name: Option<String>,
+    #[builder(!default)]
     pub price: Decimal,
     pub external_id: Option<String>,
     pub sub_merchant_member_id: Option<String>,
     pub sub_merchant_member_price: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, Builder)]
-#[serde(rename_all = "camelCase")]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MerchantPos {
     /// ID of the POS
     pub id: u64,
@@ -228,18 +227,18 @@ pub enum LoyaltyType {
     PostponingStatement,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, Builder)]
+#[derive(Serialize, Deserialize, Debug, Clone, TypedBuilder)]
 #[serde(rename_all = "camelCase")]
 pub struct Reward {
     pub card_reward_money: Decimal,
     pub firm_reward_money: Decimal,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, Builder)]
-#[serde(rename_all = "camelCase")]
+#[derive(Serialize, Deserialize, Debug, Clone, TypedBuilder)]
 pub struct Loyalty {
     #[serde(rename = "type")]
     pub loyalty_type: LoyaltyType,
+    #[builder(default)]
     pub reward: Option<Reward>,
 }
 
