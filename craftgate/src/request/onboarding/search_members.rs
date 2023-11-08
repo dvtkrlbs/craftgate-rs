@@ -1,13 +1,14 @@
 use crate::request::onboarding::MemberType;
-use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
+use typed_builder::TypedBuilder;
 
-#[derive(Serialize, Deserialize, Debug, Clone, Builder)]
+#[derive(Serialize, Deserialize, Debug, Clone, TypedBuilder)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(strip_option))]
-#[builder(default)]
+#[builder(field_defaults(default))]
 pub struct SearchMembersRequest {
+    #[builder(!default)]
     pub page: u64,
+    #[builder(!default)]
     pub size: u64,
     pub is_buyer: Option<bool>,
     pub is_sub_merchant: Option<bool>,
