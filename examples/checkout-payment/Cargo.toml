@@ -11,7 +11,7 @@ repository.workspace = true
 
 [dependencies]
 tokio = { version = "1.33.0", features = ["full"] }
-axum = "0.6.20"
+axum = "0.7.3"
 dotenvy = "0.15.7"
 craftgate = { path = "../../craftgate"}
 serde = { version = "1.0.190", features = ["derive"] }
